@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Gold background -->
+  <rect width="180" height="180" fill="#FFD700"/>
+  
+  <!-- Letter T in dark color -->
+  <text x="90" y="130" font-size="120" font-weight="bold" font-family="Arial, sans-serif" text-anchor="middle" fill="#1a1a1a" dominant-baseline="middle">T</text>
+</svg>

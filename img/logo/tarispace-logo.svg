@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FFA500"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon: Modern geometric design -->
+  <g transform="translate(55, 60)">
+    <!-- Outer circle ring -->
+    <circle cx="0" cy="0" r="32" fill="none" stroke="#000000" stroke-width="2.5"/>
+    <!-- Inner gold circle -->
+    <circle cx="0" cy="0" r="26" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="5" fill="url(#goldGrad)"/>
+    <!-- Accent curves -->
+    <path d="M -18 -18 Q -25 0 -18 18" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+    <path d="M 18 -18 Q 25 0 18 18" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Brand Name -->
+  <text x="130" y="72" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="bold" fill="#000000">Tarispace</text>
+  
+  <!-- Subtitle -->
+  <text x="130" y="100" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#999999" letter-spacing="2">DIGITAL EXCELLENCE</text>
+  
+  <!-- Gold accent line -->
+  <line x1="130" y1="108" x2="280" y2="108" stroke="url(#goldGrad)" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

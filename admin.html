@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tari Portfolio - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-admin">
+                    <img src="img/logo/tarispace-logo.svg" alt="Admin" class="admin-logo">
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-section="dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
+                    <li><a href="#" class="nav-link" data-section="profile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
+                    <li><a href="#" class="nav-link" data-section="services"><i class="fa fa-briefcase"></i> <span>Services</span></a></li>
+                    <li><a href="#" class="nav-link" data-section="portfolio"><i class="fa fa-image"></i> <span>Portfolio</span></a></li>
+                    <li><a href="#" class="nav-link" data-section="blog"><i class="fa fa-pencil"></i> <span>Blog</span></a></li>
+                    <li><a href="#" class="nav-link" data-section="messages"><i class="fa fa-envelope"></i> <span>Messages</span></a></li>
+                    <li><a href="#" class="nav-link" data-section="skills"><i class="fa fa-star"></i> <span>Skills</span></a></li>
+                    <li><a href="#" class="nav-link" data-section="settings"><i class="fa fa-cog"></i> <span>Settings</span></a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logoutBtn"><i class="fa fa-sign-out"></i> Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search...">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <div class="header-icons">
+                        <button class="icon-btn" id="notificationBtn">
+                            <i class="fa fa-bell"></i>
+                            <span class="badge">3</span>
+                        </button>
+                        <button class="user-profile-btn" id="userProfileBtn">
+                            <img src="img/tari about image.png" alt="User" class="user-avatar">
+                            <div class="user-info">
+                                <p class="user-name">Tari Pereowei</p>
+                                <p class="user-role">Admin</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="section active">
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary">
+                                <i class="fa fa-eye"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="visitCount">1,245</h3>
+                                <p>Total Visits</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="messageCount">28</h3>
+                                <p>Messages</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning">
+                                <i class="fa fa-briefcase"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="projectCount">12</h3>
+                                <p>Projects</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="blogCount">8</h3>
+                                <p>Blog Posts</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <h3>Visitor Analytics</h3>
+                            <canvas id="visitorChart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <h3>Traffic Source</h3>
+                            <canvas id="trafficChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>New message from John Doe</p>
+                                    <span>2 minutes ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fa fa-heart"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>Portfolio project viewed 50 times</p>
+                                    <span>1 hour ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profile Section -->
+                <section id="profile-section" class="section">
+                    <div class="section-header">
+                        <h2>My Profile</h2>
+                        <button class="btn btn-primary" id="editProfileBtn">Edit Profile</button>
+                    </div>
+
+                    <div class="profile-container">
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <div class="profile-images-row">
+                                    <div class="profile-image-section">
+                                        <label>Profile Photo</label>
+                                        <img src="img/tari about image.png" alt="Profile" class="profile-image">
+                                        <button class="change-photo-btn" id="changePhotoBtn"><i class="fa fa-camera"></i> Change Profile Photo</button>
+                                        <input type="file" id="photoInput" style="display: none;" accept="image/*">
+                                    </div>
+                                    <div class="profile-image-section">
+                                        <label>About Section Image</label>
+                                        <img src="img/tari about image.png" alt="About" class="about-image-preview profile-image">
+                                        <button class="change-photo-btn" id="changeAboutPhotoBtn"><i class="fa fa-camera"></i> Change About Photo</button>
+                                        <input type="file" id="aboutPhotoInput" style="display: none;" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="profile-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Full Name</label>
+                                        <input type="text" id="fullName" placeholder="Full Name" value="Tari Pereowei">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        <input type="text" id="title" placeholder="Your Title" value="Full Stack Developer">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Bio</label>
+                                    <textarea id="bio" placeholder="Tell about yourself" rows="4">Experienced full stack developer with passion for creating modern web solutions.</textarea>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="email" placeholder="Email" value="tari@example.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="tel" id="phone" placeholder="Phone" value="+1 (555) 123-4567">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Location</label>
+                                        <input type="text" id="location" placeholder="City, Country" value="Lagos, Nigeria">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Experience (Years)</label>
+                                        <input type="number" id="experience" placeholder="Years" value="5">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Social Links</label>
+                                    <div class="social-inputs">
+                                        <input type="url" placeholder="LinkedIn URL" id="linkedinUrl" value="https://linkedin.com/in/tari">
+                                        <input type="url" placeholder="GitHub URL" id="githubUrl" value="https://github.com/tari">
+                                        <input type="url" placeholder="Twitter URL" id="twitterUrl" value="https://twitter.com/tari">
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                                    <button class="btn btn-secondary" id="cancelProfileBtn">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+                <section id="services-section" class="section">
+                    <div class="section-header">
+                        <h2>Services</h2>
+                        <button class="btn btn-primary" id="addServiceBtn">+ Add Service</button>
+                    </div>
+
+                    <div class="services-list" id="servicesList"></div>
+
+                    <!-- Add/Edit Service Modal -->
+                    <div class="modal" id="serviceModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2>Add New Service</h2>
+                                <button class="close-btn" id="closeServiceModal">&times;</button>
+                            </div>
+                            <form id="serviceForm">
+                                <div class="form-group">
+                                    <label>Service Title</label>
+                                    <input type="text" id="serviceTitle" placeholder="e.g., Web Development" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea id="serviceDesc" placeholder="Service description" rows="4" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Icon (Font Awesome)</label>
+                                    <input type="text" id="serviceIcon" placeholder="e.g., fa-code" required>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save Service</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelServiceBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Portfolio Section -->
+                <section id="portfolio-section" class="section">
+                    <div class="section-header">
+                        <h2>Portfolio Projects</h2>
+                        <button class="btn btn-primary" id="addProjectBtn">+ Add Project</button>
+                    </div>
+
+                    <div class="projects-list" id="projectsList"></div>
+
+                    <!-- Add/Edit Project Modal -->
+                    <div class="modal" id="projectModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2>Add New Project</h2>
+                                <button class="close-btn" id="closeProjectModal">&times;</button>
+                            </div>
+                            <form id="projectForm">
+                                <div class="form-group">
+                                    <label>Project Title</label>
+                                    <input type="text" id="projectTitle" placeholder="Project name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea id="projectDesc" placeholder="Project description" rows="4" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Project Image</label>
+                                    <input type="file" id="projectImage" accept="image/*" required>
+                                    <small style="display: block; margin-top: 8px; color: #666; font-size: 12px;">💡 Tip: Upload your image file. The system will store the file name. Make sure to upload the actual image file to the <strong>img/portfolio/</strong> folder in your project.</small>
+                                    <img id="projectImagePreview" style="max-width: 200px; margin-top: 10px; display: none;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Technologies Used</label>
+                                    <input type="text" id="projectTech" placeholder="e.g., React, Node.js, MongoDB" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Project Link</label>
+                                    <input type="url" id="projectLink" placeholder="https://example.com">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save Project</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelProjectBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Blog Section -->
+                <section id="blog-section" class="section">
+                    <div class="section-header">
+                        <h2>Blog Posts</h2>
+                        <button class="btn btn-primary" id="addBlogBtn">+ Write New Post</button>
+                    </div>
+
+                    <div class="blog-list" id="blogList"></div>
+
+                    <!-- Add/Edit Blog Modal -->
+                    <div class="modal" id="blogModal">
+                        <div class="modal-content blog-modal">
+                            <div class="modal-header">
+                                <h2>Write New Post</h2>
+                                <button class="close-btn" id="closeBlogModal">&times;</button>
+                            </div>
+                            <form id="blogForm">
+                                <div class="form-group">
+                                    <label>Post Title</label>
+                                    <input type="text" id="blogTitle" placeholder="Post title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Cover Image URL</label>
+                                    <input type="text" id="blogImage" placeholder="e.g., img/blog/article-cover.jpg">
+                                </div>
+                                <div class="form-group">
+                                    <label>Content</label>
+                                    <textarea id="blogContent" placeholder="Write your post content..." rows="10" required></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Author</label>
+                                        <input type="text" id="blogAuthor" placeholder="Author name" value="Robert Kariuki">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <input type="text" id="blogCategory" placeholder="e.g., Technology" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tags</label>
+                                        <input type="text" id="blogTags" placeholder="e.g., web, development">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Read Time (minutes)</label>
+                                        <input type="number" id="blogReadTime" placeholder="e.g., 5" min="1" value="5">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Article Link</label>
+                                        <input type="text" id="blogLink" placeholder="e.g., article-title.html">
+                                    </div>
+                                    <div class="form-group" style="display: flex; align-items: center; padding-top: 20px;">
+                                        <input type="checkbox" id="blogFeatured" style="width: auto; margin: 0;">
+                                        <label style="margin-left: 8px; margin-bottom: 0;">Featured Article</label>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Publish Post</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelBlogBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Messages Section -->
+                <section id="messages-section" class="section">
+                    <div class="section-header">
+                        <h2>Messages</h2>
+                        <button class="btn btn-secondary" id="clearMessagesBtn">Clear All</button>
+                    </div>
+
+                    <div class="messages-list" id="messagesList"></div>
+                </section>
+
+                <!-- Skills Section -->
+                <section id="skills-section" class="section">
+                    <div class="section-header">
+                        <h2>Skills</h2>
+                        <button class="btn btn-primary" id="addSkillBtn">+ Add Skill</button>
+                    </div>
+
+                    <div class="skills-list" id="skillsList"></div>
+
+                    <!-- Add/Edit Skill Modal -->
+                    <div class="modal" id="skillModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2>Add New Skill</h2>
+                                <button class="close-btn" id="closeSkillModal">&times;</button>
+                            </div>
+                            <form id="skillForm">
+                                <div class="form-group">
+                                    <label>Skill Name</label>
+                                    <input type="text" id="skillName" placeholder="e.g., React.js" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Proficiency Level (%)</label>
+                                    <input type="range" id="skillLevel" min="0" max="100" value="70" class="slider">
+                                    <span id="skillLevelValue">70%</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <select id="skillCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Frontend">Frontend</option>
+                                        <option value="Backend">Backend</option>
+                                        <option value="Database">Database</option>
+                                        <option value="Tools">Tools</option>
+                                    </select>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save Skill</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelSkillBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings-section" class="section">
+                    <div class="section-header">
+                        <h2>Settings</h2>
+                    </div>
+
+                    <div class="settings-container">
+                        <div class="settings-group">
+                            <h3>Website Settings</h3>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" checked> Enable Comments on Blog
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" checked> Show Contact Form
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" checked> Enable Newsletter Signup
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Notification Settings</h3>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" checked> Email Notifications for Messages
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" checked> Daily Analytics Summary
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Security</h3>
+                            <button class="btn btn-warning" id="changePasswordBtn">Change Password</button>
+                            <button class="btn btn-danger" id="backupDataBtn">Backup Data</button>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Data Management</h3>
+                            <button class="btn btn-danger" id="resetDataBtn" onclick="AdminDashboard.resetData()">Reset All Data to Default</button>
+                            <p style="font-size: 12px; color: #999; margin-top: 10px;">This will clear localStorage and reload all 6 blog articles from the system.</p>
+                            <button class="btn btn-success" id="syncCloudBtn" onclick="AdminDashboard.syncAllBlogsToCloud()" style="background: #28a745; margin-top: 10px;">🔄 Sync All 6 Blogs to Cloud (JSONbin)</button>
+                            <p style="font-size: 12px; color: #999; margin-top: 10px;">Push the 6 blog articles to JSONbin cloud. They will appear on both admin and main site immediately.</p>
+                        </div>
+
+                        <div class="settings-actions">
+                            <button class="btn btn-primary" id="saveSaveSettingsBtn">Save Settings</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="toast" id="successToast">
+        <i class="fa fa-check"></i>
+        <span id="toastMessage">Operation successful!</span>
+    </div>
+
+    <!-- Loading Overlay Styles -->
+    <style>
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-message {
+            font-size: 18px;
+            margin: 0;
+        }
+        .profile-images-row {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .profile-image-section {
+            text-align: center;
+        }
+        .profile-image-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+        .message-card.unread {
+            border-left: 4px solid #6366f1;
+            background: #f8f9ff;
+        }
+        .new-badge {
+            background: #ef4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 10px;
+        }
+        .msg-btn-mark-read {
+            background: #10b981;
+            color: white;
+        }
+        #notificationBtn .badge {
+            display: none;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 11px;
+            align-items: center;
+            justify-content: center;
+        }
+        #notificationBtn {
+            position: relative;
+        }
+    </style>
+
+    <!-- Data Sync Service - Must load first -->
+    <script src="js/data-sync-service.js"></script>
+    <!-- Admin Dashboard with cloud sync -->
+    <script src="js/admin-dashboard-v2.js"></script>
+</body>
+</html>

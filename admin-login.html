@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Tari Portfolio</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .remember-forgot label input {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .remember-forgot a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .remember-forgot a:hover {
+            color: #764ba2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            color: #d1d5db;
+            font-size: 13px;
+        }
+
+        .divider::before {
+            content: '';
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background: #d1d5db;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .divider::after {
+            content: '';
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background: #d1d5db;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        .demo-login {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .demo-login p {
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .demo-login code {
+            background: #e5e7eb;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #10b981;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="img/logo/tarispace-logo.svg" alt="Logo" class="login-logo">
+                <h1>Admin Portal</h1>
+                <p>Welcome to Tari Portfolio Admin</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="admin@example.com" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="remember-forgot">
+                    <label>
+                        <input type="checkbox" id="remember" name="remember">
+                        Remember me
+                    </label>
+                    <a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn">Sign In</button>
+
+                <div class="error-message" id="generalError"></div>
+                <div class="success-message" id="successMessage"></div>
+            </form>
+
+            <div class="divider">Demo Credentials</div>
+
+            <div class="demo-login">
+                <p>📝 Test Credentials (Development Only):</p>
+                <p>Email: <code>admin@example.com</code></p>
+                <p>Password: <code>demo123</code></p>
+                <p style="margin-top: 15px; color: #ef4444; font-weight: 600;">
+                    ⚠️ Change credentials in production!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin Login Handler
+        const LoginManager = {
+            // Demo credentials (replace with backend authentication)
+            demoCredentials: {
+                email: 'admin@example.com',
+                password: 'demo123'
+            },
+
+            init() {
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    this.handleLogin(e);
+                });
+
+                // Check if already logged in
+                this.checkAuth();
+            },
+
+            handleLogin(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const remember = document.getElementById('remember').checked;
+
+                // Clear previous errors
+                document.getElementById('emailError').style.display = 'none';
+                document.getElementById('passwordError').style.display = 'none';
+                document.getElementById('generalError').style.display = 'none';
+
+                // Validate input
+                if (!email || !password) {
+                    document.getElementById('generalError').textContent = 'Please fill in all fields';
+                    document.getElementById('generalError').style.display = 'block';
+                    return;
+                }
+
+                // Demo validation (replace with API call)
+                if (email === this.demoCredentials.email && 
+                    password === this.demoCredentials.password) {
+                    this.loginSuccess(email, remember);
+                } else {
+                    document.getElementById('generalError').textContent = 'Invalid email or password';
+                    document.getElementById('generalError').style.display = 'block';
+                }
+            },
+
+            loginSuccess(email, remember) {
+                // Store authentication info
+                const authData = {
+                    email: email,
+                    token: 'demo-token-' + Date.now(),
+                    loginTime: new Date().toISOString()
+                };
+
+                localStorage.setItem('authData', JSON.stringify(authData));
+
+                if (remember) {
+                    localStorage.setItem('rememberEmail', email);
+                }
+
+                // Show success message
+                document.getElementById('successMessage').textContent = 'Login successful! Redirecting...';
+                document.getElementById('successMessage').style.display = 'block';
+
+                // Redirect to admin dashboard
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1500);
+            },
+
+            checkAuth() {
+                const authData = localStorage.getItem('authData');
+                const rememberEmail = localStorage.getItem('rememberEmail');
+
+                if (rememberEmail) {
+                    document.getElementById('email').value = rememberEmail;
+                    document.getElementById('remember').checked = true;
+                }
+
+                // If already authenticated, redirect
+                if (authData) {
+                    const auth = JSON.parse(authData);
+                    const loginTime = new Date(auth.loginTime).getTime();
+                    const now = Date.now();
+                    const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+
+                    if (now - loginTime < sessionDuration) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        localStorage.removeItem('authData');
+                    }
+                }
+            }
+        };
+
+        // Forgot password handler
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            alert('Password reset feature coming soon!\n\nFor now, use demo credentials:\nEmail: admin@example.com\nPassword: demo123');
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            LoginManager.init();
+        });
+    </script>
+</body>
+</html>

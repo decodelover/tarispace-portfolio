@@ -144,6 +144,8 @@ const AdminDashboard = {
         // Logout
         document.getElementById('logoutBtn')?.addEventListener('click', () => {
             if (confirm('Are you sure you want to logout?')) {
+                // Clear current auth session so login page does not auto-redirect.
+                localStorage.removeItem('authData');
                 this.showToast('Logged out successfully', 'success');
                 setTimeout(() => {
                     window.location.href = 'admin-login.html';

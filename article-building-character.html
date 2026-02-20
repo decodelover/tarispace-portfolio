@@ -43,7 +43,7 @@
 		.article-header-content { position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; animation: slideInDown 0.8s ease-out; }
 		.article-category { display: inline-block; background: linear-gradient(135deg, #D4AF37 0%, #E5C158 100%); color: #000; padding: 14px 35px; border-radius: 50px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 40px; box-shadow: 0 15px 40px rgba(212, 175, 55, 0.35); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; }
 		.article-category:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 25px 60px rgba(212, 175, 55, 0.45); }
-		.article-category::before { content: '✦ '; margin-right: 8px; }
+		.article-category::before { content: ''; margin-right: 0; }
 		.article-title { font-size: 3.8rem; font-weight: 900; margin-bottom: 35px; line-height: 1.15; text-shadow: 0 15px 50px rgba(0, 0, 0, 0.6); letter-spacing: -2px; background: linear-gradient(135deg, #FFFFFF 0%, #D4AF37 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 		.article-meta-header { display: flex; justify-content: center; align-items: center; gap: 60px; margin-top: 50px; flex-wrap: wrap; font-size: 1.05rem; }
 		.meta-item { display: flex; align-items: center; gap: 14px; background: rgba(212, 175, 55, 0.1); padding: 12px 24px; border-radius: 50px; border: 1px solid rgba(212, 175, 55, 0.3); transition: all 0.3s ease; }
@@ -56,10 +56,10 @@
 		.article-body strong { color: var(--gold); font-weight: 700; }
 		.article-body em { color: #d63031; font-style: italic; font-weight: 600; }
 		.article-section-title { font-size: 2.2rem; font-weight: 900; color: var(--dark-bg); margin: 2.5rem 0 1.5rem; padding-bottom: 15px; padding-left: 20px; border-bottom: 4px solid var(--gold); font-family: 'Poppins', sans-serif; letter-spacing: -0.5px; position: relative; }
-		.article-section-title::before { content: '◆ '; color: var(--gold); }
+		.article-section-title::before { content: ''; }
 		.article-section-title:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
-		.emphasis-block { background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.04) 100%); border-left: 6px solid var(--gold); padding: 25px 30px; margin: 2.5rem 0; border-radius: 8px; font-style: italic; color: #2c3e50; line-height: 1.9; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1); position: relative; padding-left: 50px; }
-		.emphasis-block::before { content: '💡'; position: absolute; left: 20px; font-size: 1.8rem; }
+		.emphasis-block { background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.04) 100%); border-left: 6px solid var(--gold); padding: 25px 30px; margin: 2.5rem 0; border-radius: 8px; font-style: italic; color: #2c3e50; line-height: 1.9; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1); position: relative; padding-left: 30px; }
+		.emphasis-block::before { content: ''; }
 		.article-quote { border-left: 5px solid var(--gold); padding: 25px 0 25px 35px; margin: 2.5rem 0; font-size: 1.2rem; color: #34495e; font-style: italic; font-family: 'Poppins', sans-serif; font-weight: 600; background: linear-gradient(to right, rgba(212, 175, 55, 0.05), transparent); position: relative; }
 		.article-quote::before { content: '"'; position: absolute; left: 5px; font-size: 3.5rem; color: rgba(212, 175, 55, 0.2); line-height: 0; }
 		.article-footer { border-top: 3px solid var(--gold); margin-top: 4rem; padding-top: 2.5rem; }
@@ -152,7 +152,7 @@
 					</div>
 					<div class="meta-item">
 						<i class="las la-hourglass-half"></i>
-						<strong>10 min read</strong>
+						<strong>12 min read</strong>
 					</div>
 				</div>
 			</div>
@@ -160,95 +160,83 @@
 
 		<article class="article-content">
 			<div class="article-body">
-				<p>I'm convinced that everyone should code—not necessarily to become a professional programmer, but to become a better person. Because programming doesn't just teach you how to write code. It teaches you about life.</p>
+				<p>People often think programming is only about logic, tools, and technical output. I used to think that too. But over the years, I have seen something deeper: the way you build software quietly builds your character.</p>
 
-				<p>Let me explain what I mean.</p>
+				<p>Code exposes your habits. It exposes your patience, your honesty, your discipline, and your humility. It does not care how confident you sound. It reveals who you are when nobody is clapping.</p>
 
-				<h2 class="article-section-title">Discipline: The Non-Negotiable Foundation</h2>
+				<p>This is one reason I respect the craft so much. Programming did not only improve my career. It improved me as a person.</p>
 
-				<p>Code doesn't accept approximations. You can't be "kind of" correct. You can't say something is "mostly" working. Either your code works or it doesn't. There's no middle ground.</p>
+				<h2 class="article-section-title">Discipline Is Not A Motivational Mood</h2>
 
-				<p>This teaches you discipline. Not the harsh, punitive kind, but the natural discipline that comes from understanding consequences. When you write sloppy code, it breaks. When you cut corners, the system collapses. You learn quickly that cutting corners is actually more work, because you have to clean up the mess later.</p>
+				<p>Writing good code consistently requires discipline. You cannot rely on mood. You cannot rely on inspiration. You have to show up, think clearly, and do the work even when it feels repetitive.</p>
 
-				<p>That lesson—that shortcuts don't actually save time, they create debt—transfers directly to life. Skipping exercise doesn't save time; you spend that time sick. Neglecting relationships doesn't save energy; you spend it alone. Avoiding difficult conversations doesn't prevent problems; it multiplies them.</p>
-
-				<p>Programming teaches you that discipline isn't about deprivation. It's about understanding that the foundation matters, and building a solid foundation saves you pain later.</p>
-
-				<h2 class="article-section-title">Integrity: The Code Doesn't Lie</h2>
-
-				<p>There's a beautiful honesty to code. It shows you exactly who you are as a craftsperson. You can't fake code. You can't talk your way around it. Either the code is clean, well-structured, and maintainable, or it's messy, confusing, and brittle.</p>
-
-				<p>I've met programmers who talk beautifully about their craft but write terrible code. I've also met programmers who are quiet and humble but produce code that's a work of art—elegant, efficient, maintainable.</p>
-
-				<p>The code always reveals the truth.</p>
+				<p>When I was transitioning from survival mode into technology, I had many days where learning felt hard. Data was limited. Electricity was unstable. My energy was low. But I learned to build anyway. Not perfectly, but consistently.</p>
 
 				<div class="emphasis-block">
-					<p>This teaches you integrity. Not integrity for appearance, but integrity for its own sake. Because you know that cutting corners is visible to anyone who looks at your work, and you know that compromising quality will catch up with you.</p>
+					<p>Discipline is doing the right thing even when it is not convenient.</p>
 				</div>
 
-				<p>Once you internalize that lesson, you apply it everywhere. You show up on time not because someone's watching, but because you respect your commitments. You do quality work not because you'll be praised, but because anything less is betrayal of your own standards.</p>
+				<p>That lesson moved beyond coding. It affected my health choices, my communication, my planning, and how I honor commitments.</p>
 
-				<h2 class="article-section-title">Patience: The 80/20 Rule of Understanding</h2>
+				<h2 class="article-section-title">Integrity Shows Up In Invisible Decisions</h2>
 
-				<p>Eighty percent of programming is understanding the problem. Twenty percent is writing the solution. But people always get this backwards. They want to jump to coding immediately.</p>
+				<p>In code, you can take shortcuts and hope nobody notices. But eventually, that debt returns. Bugs multiply. Maintenance becomes stressful. Trust drops. The same thing happens in life when we take hidden shortcuts.</p>
 
-				<p>The best programmers I know—the ones whose solutions are elegant and require minimal debugging—they take time to understand the problem first. They ask questions. They think. They map out the system before they touch the keyboard.</p>
+				<p>Programming trained me to respect quality even when nobody is watching. Naming things properly. Structuring logic clearly. Testing edge cases. Documenting assumptions. These are not glamorous tasks, but they reveal integrity.</p>
 
-				<p>This patience transfers to life. Most people rush to solutions without understanding problems. They want to fix relationships without understanding what's broken. They want to succeed without understanding what success requires. They want to change without understanding why they need to.</p>
-
-				<p>Programming teaches you that patience is a strength, not a weakness. That taking time to understand something deeply actually saves time overall.</p>
-
-				<h2 class="article-section-title">Humility: You Will Make Mistakes</h2>
-
-				<p>Every programmer writes bugs. I've written thousands. The difference between junior and senior programmers isn't that seniors write fewer bugs—it's that they expect bugs and they know how to find them.</p>
-
-				<p>This teaches radical humility. You stop assuming you're right. You test. You debug. You ask others to review your work. You implement safeguards because you know you'll make mistakes.</p>
+				<p>Integrity is not only about big moral moments. It is about small daily decisions that nobody rewards immediately.</p>
 
 				<div class="article-quote">
-					"The best programmers know they'll make mistakes, so they write code that makes mistakes visible. The best people do the same thing with their lives."
+					"Clean code is a character decision before it is a technical decision."
 				</div>
 
-				<p>That's how you grow. By assuming you don't know everything. By asking for feedback. By implementing safeguards in your own thinking so you catch your own biases.</p>
+				<h2 class="article-section-title">Humility Is Required To Grow</h2>
 
-				<h2 class="article-section-title">Collaboration: Code Is Written for Humans</h2>
+				<p>Every developer writes bugs. Every developer misunderstands something sometimes. Code has a way of humbling you quickly. You think a feature is complete, then users reveal a scenario you did not consider. You think your logic is perfect, then one bug breaks the flow.</p>
 
-				<p>Here's something that surprised me when I became professional: code is written for humans, not for computers. The computer will execute it no matter how it's written. But other humans need to understand it, maintain it, build on it.</p>
+				<p>At first, this can feel frustrating. Later, it becomes a gift. It teaches you to stay coachable. It teaches you to ask for reviews. It teaches you that feedback is not an attack; it is a path to better output.</p>
 
-				<p>This teaches empathy. You think about the next person who will read your code. You write clear variable names. You add comments. You structure your code logically. You make it easy for someone else to understand your thinking.</p>
+				<p>In my personal life, this made me less defensive. I became more willing to listen, admit gaps, and improve without drama.</p>
 
-				<p>This is profound. It means you're not just trying to solve the problem for yourself. You're solving it in a way that makes sense to others. You're thinking beyond yourself.</p>
+				<h2 class="article-section-title">Patience Beats Panic</h2>
 
-				<p>Apply this to everything, and you become a different kind of person. You write emails that are clear and kind. You explain your thinking. You consider how your words will land on someone else. You build things that other people can use and improve on.</p>
+				<p>Debugging teaches patience at a deep level. You cannot shout a bug away. You cannot intimidate a broken system into working. You have to slow down, observe carefully, test assumptions, and move step by step.</p>
 
-				<h2 class="article-section-title">The Power of Incremental Progress</h2>
+				<p>This mindset helped me outside tech too. In difficult conversations, I now try to understand before reacting. In financial pressure, I analyze before making rushed decisions. In uncertainty, I break complexity into smaller steps.</p>
 
-				<p>You don't build a complex system all at once. You build it incrementally. You write a function, you test it. You add another function, you test it. You integrate them, you test everything. You iterate, you improve.</p>
+				<div class="emphasis-block">
+					<p>Code taught me this: panic creates noise, patience reveals truth.</p>
+				</div>
 
-				<p>Programmers understand that small, consistent progress beats sporadic heroic effort. That showing up every day and making incremental improvements compounds into extraordinary systems.</p>
+				<h2 class="article-section-title">Consistency Builds Identity</h2>
 
-				<p>Most people, though, think of life differently. They want to transform overnight. They want one dramatic change to fix everything. When that doesn't happen, they quit.</p>
+				<p>Character is not built in one motivational weekend. It is built through repeated daily behavior. The same is true in software engineering. Strong systems come from consistent small improvements, not random bursts of effort.</p>
 
-				<p>But if you approach life the way you approach code—with consistent, incremental improvements—suddenly transformation becomes possible. You lose 1% of your weight this week, another 1% next week. That's compound. You read 20 pages of a book today, 20 pages tomorrow. That's compound. You practice a skill for 30 minutes daily. That's compound.</p>
+				<p>When you refactor regularly, write better tests, and improve architecture over time, the product gets stronger. When you keep your promises, guard your standards, and show up responsibly, your life gets stronger.</p>
 
-				<p>Programming teaches you the power of the daily increment.</p>
+				<p>This is why I tell younger developers: do not only ask "How do I earn more?" Also ask "Who am I becoming while I build?"</p>
 
-				<h2 class="article-section-title">Debugging Teaches Presence</h2>
+				<h2 class="article-section-title">Collaboration Teaches Respect</h2>
 
-				<p>When you're debugging, you can't be distracted. You have to be fully present, because missing one detail means missing the bug. You have to think carefully. You have to test systematically. You have to eliminate possibilities one by one until you find the truth.</p>
+				<p>Software is rarely a one-person journey. Even if you code alone, someone else will read your work, maintain it, or rely on it. Writing understandable code is an act of respect for other people.</p>
 
-				<p>This is meditation. This is presence. This is what being fully engaged with something looks like.</p>
+				<p>That habit changed how I communicate generally. I became clearer. I explain context. I reduce ambiguity. I try to make things easier for the next person, not harder.</p>
 
-				<p>Most people are distracted all the time. Half-present in conversations. Half-focused on work. Half-aware of their own lives. Programming teaches you what it feels like to be fully present, fully engaged. And once you've experienced that, you start to want it in other areas of your life.</p>
+				<p>Respect in code and respect in life follow the same principle: think beyond yourself.</p>
 
-				<h2 class="article-section-title">The Character You Build Is the Life You Live</h2>
+				<h2 class="article-section-title">Character Is The Long-Term Advantage</h2>
 
-				<p>Here's what I've learned: you are what you do daily. If you write sloppy code, you're training yourself to accept sloppiness. If you skip code reviews, you're training yourself to isolate from feedback. If you take shortcuts, you're training yourself to compromise.</p>
+				<p>Technical tools change fast. Frameworks rise and fall. Trends move. But character compounds. Discipline, integrity, humility, patience, and consistency keep paying dividends in every season.</p>
 
-				<p>But if you write clean code, you're training yourself for excellence. If you welcome code reviews, you're training yourself to be coachable. If you refactor and improve constantly, you're training yourself to never accept mediocrity.</p>
+				<p>This is why two people with similar technical skills can have very different outcomes. The one with stronger character usually sustains growth longer, leads better, and recovers faster from setbacks.</p>
 
-				<p>These aren't just habits for work. They become your character. They become how you approach everything—relationships, health, personal growth, creative work.</p>
+				<div class="article-quote">
+					"Software can be copied. Character cannot."
+				</div>
 
-				<p>Programming built my character. Not because it's special, but because it's unforgiving. It shows you exactly who you are and what you're capable of. And once you know that, you can choose to keep improving.</p>
+				<p>Programming gave me income opportunities, yes. But more than that, it gave me a training ground for becoming the kind of man I want to be. For that, I will always respect this craft.</p>
+
+				<p style="text-align: center; margin-top: 3rem; font-size: 1.3rem; font-weight: 700; color: var(--gold);">Build software with excellence.<br>You will build yourself at the same time.</p>
 
 				<div class="article-footer">
 					<div class="article-tags">

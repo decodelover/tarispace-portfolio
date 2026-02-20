@@ -789,7 +789,7 @@ const AdminDashboard = {
                     <p class="project-description">${project.description}</p>
                     <div class="project-meta">
                         <span><i class="fa fa-code"></i> ${project.tech}</span>
-                        ${project.link ? `<span><i class="fa fa-link"></i> <a href="${project.link}" target="_blank">View Project</a></span>` : ''}
+                        ${project.link ? `<span><i class="fa fa-link"></i> <a href="${project.link}" target="_blank">Watch Project</a></span>` : ''}
                     </div>
                     <div class="card-actions">
                         <button class="card-btn card-btn-edit" onclick="AdminDashboard.openProjectModal(${project.id})">Edit</button>

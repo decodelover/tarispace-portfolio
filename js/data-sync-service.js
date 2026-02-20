@@ -17,8 +17,8 @@ const DataSyncService = {
     // ========================================================================
     // CONFIGURATION - JSONbin.io credentials
     // ========================================================================
-    JSONBIN_BIN_ID: '6966ca8cae596e708fda73f6',
-    JSONBIN_API_KEY: '$2a$10$kF1WW4grArkeQvZEZPwjaOZd7WvGav.EEpEJT8fWwjwWyJOz8Hn9a',
+    JSONBIN_BIN_ID: 'YOUR_BIN_ID_HERE',
+    JSONBIN_API_KEY: 'YOUR_API_KEY_HERE',
     JSONBIN_BASE_URL: 'https://api.jsonbin.io/v3',
     
     // Cache for performance
@@ -35,7 +35,7 @@ const DataSyncService = {
                 fullName: 'Tari Godsproperty Pereowei',
                 title: 'Full Stack & Blockchain Developer',
                 bio: "I'm Tari—a creative problem-solver and tech enthusiast who transforms ideas into elegant digital experiences. I blend analytical thinking with artistic vision to build web solutions that truly make an impact.",
-                email: 'taripereowei@gmail.com',
+                email: 'contact@tarispace.me',
                 phone: '+234 704 645 7549',
                 location: 'Bayelsa State, Nigeria',
                 experience: 5,
@@ -77,7 +77,7 @@ const DataSyncService = {
                     id: 1,
                     title: 'Starknet Infrastructure',
                     description: 'A comprehensive blockchain infrastructure platform built on Starknet L2. Features smart contract deployment and developer tools for the Cairo ecosystem.',
-                    image: 'img/portfolio/project1.jpg',
+                    image: 'img/starknet.png',
                     category: 'blockchain',
                     tech: 'Starknet, Cairo, React',
                     link: '#',
@@ -87,9 +87,19 @@ const DataSyncService = {
                     id: 2,
                     title: 'Taricents Platform',
                     description: 'A modern e-commerce platform with seamless user experience. Includes product catalog, shopping cart, and secure checkout functionality.',
-                    image: 'img/portfolio/project2.jpg',
+                    image: 'img/portfolio/tariscent.png',
                     category: 'web',
                     tech: 'React, Node.js, MongoDB',
+                    link: '#',
+                    featured: true
+                },
+                {
+                    id: 3,
+                    title: 'Syre Bijouteries',
+                    description: 'An elegant jewelry storefront experience with premium product presentation, clean storytelling, and responsive browsing across devices.',
+                    image: 'img/portfolio/syre boujettes.png',
+                    category: 'design',
+                    tech: 'E-Commerce, Jewelry, Responsive',
                     link: '#',
                     featured: true
                 }
@@ -207,6 +217,88 @@ const DataSyncService = {
         };
     },
 
+    getSyreBijouteriesProjectTemplate() {
+        return {
+            title: 'Syre Bijouteries',
+            description: 'An elegant jewelry storefront experience with premium product presentation, clean storytelling, and responsive browsing across devices.',
+            image: 'img/portfolio/syre boujettes.png',
+            category: 'design',
+            tech: 'E-Commerce, Jewelry, Responsive',
+            link: '#',
+            featured: true
+        };
+    },
+
+    ensureSyreBijouteriesProject(data) {
+        if (!data || typeof data !== 'object') return false;
+
+        let changed = false;
+        if (!Array.isArray(data.projects)) {
+            data.projects = [];
+            changed = true;
+        }
+
+        const template = this.getSyreBijouteriesProjectTemplate();
+        const targetIndex = data.projects.findIndex((project) => {
+            const title = (project?.title || '').toLowerCase();
+            return title.includes('fusion design') || title.includes('syre bijouteries');
+        });
+
+        const applyTemplate = (project) => {
+            const desired = {
+                ...project,
+                ...template,
+                id: project.id,
+                link: project.link || template.link
+            };
+
+            let projectChanged = false;
+            Object.keys(desired).forEach((key) => {
+                if (project[key] !== desired[key]) {
+                    project[key] = desired[key];
+                    projectChanged = true;
+                }
+            });
+
+            return projectChanged;
+        };
+
+        if (targetIndex !== -1) {
+            changed = applyTemplate(data.projects[targetIndex]) || changed;
+        } else {
+            const nextId = data.projects.reduce((max, project) => {
+                const parsed = Number(project?.id);
+                return Number.isFinite(parsed) ? Math.max(max, parsed) : max;
+            }, 0) + 1;
+
+            const syreProject = { id: nextId, ...template };
+            if (data.projects.length >= 2) {
+                data.projects.splice(2, 0, syreProject);
+            } else {
+                data.projects.push(syreProject);
+            }
+            changed = true;
+        }
+
+        return changed;
+    },
+
+    ensureProfessionalContactEmail(data) {
+        if (!data || typeof data !== 'object') return false;
+
+        if (!data.profile || typeof data.profile !== 'object') {
+            data.profile = {};
+        }
+
+        const currentEmail = (data.profile.email || '').trim().toLowerCase();
+        if (!currentEmail || currentEmail === 'taripereowei@gmail.com') {
+            data.profile.email = 'contact@tarispace.me';
+            return true;
+        }
+
+        return false;
+    },
+
     // ========================================================================
     // INITIALIZATION
     // ========================================================================
@@ -222,6 +314,14 @@ const DataSyncService = {
             if (!data || Object.keys(data).length === 0) {
                 // Initialize with default data
                 await this.saveData(this.getDefaultData());
+            } else {
+                const syncChanged =
+                    this.ensureSyreBijouteriesProject(data) ||
+                    this.ensureProfessionalContactEmail(data);
+                if (syncChanged) {
+                    // Keep project/profile data aligned between site/admin/cloud
+                    await this.saveData(data);
+                }
             }
             console.log('✅ DataSyncService initialized successfully');
             return true;
@@ -232,9 +332,26 @@ const DataSyncService = {
     },
 
     _initLocalStorage() {
-        if (!localStorage.getItem('portfolioData')) {
+        const localData = localStorage.getItem('portfolioData');
+
+        if (!localData) {
+            localStorage.setItem('portfolioData', JSON.stringify(this.getDefaultData()));
+            return true;
+        }
+
+        try {
+            const parsed = JSON.parse(localData);
+            const localChanged =
+                this.ensureSyreBijouteriesProject(parsed) ||
+                this.ensureProfessionalContactEmail(parsed);
+            if (localChanged) {
+                localStorage.setItem('portfolioData', JSON.stringify(parsed));
+            }
+        } catch (error) {
+            console.warn('DataSyncService: invalid local portfolio data, resetting to defaults.');
             localStorage.setItem('portfolioData', JSON.stringify(this.getDefaultData()));
         }
+
         return true;
     },
 

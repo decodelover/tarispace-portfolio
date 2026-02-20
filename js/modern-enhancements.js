@@ -206,11 +206,17 @@ function initializeContactForm() {
 	const contactForm = document.getElementById('contactForm');
 	if (!contactForm) return;
 
+	// The live contact flow is handled by SiteContentLoader + DataSyncService.
+	// Skip the legacy simulated handler when sync scripts are present.
+	if (typeof window.SiteContentLoader !== 'undefined' || typeof window.DataSyncService !== 'undefined') {
+		return;
+	}
+
 	contactForm.addEventListener('submit', function(e) {
 		e.preventDefault();
 
 		const formData = new FormData(this);
-		const inputs = this.querySelectorAll('input, textarea');
+		const inputs = this.querySelectorAll('input[required], textarea[required], select[required]');
 		const submitBtn = this.querySelector('.btn-submit');
 
 		// Validate form

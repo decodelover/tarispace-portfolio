@@ -14,12 +14,15 @@
 const SiteContentLoader = {
     data: null,
     isLoaded: false,
+    isInitializing: false,
 
     // ========================================================================
     // INITIALIZATION
     // ========================================================================
     
     async init() {
+        if (this.isLoaded || this.isInitializing) return;
+        this.isInitializing = true;
         console.log('🚀 SiteContentLoader: Initializing...');
         
         try {
@@ -54,6 +57,8 @@ const SiteContentLoader = {
         } catch (error) {
             console.error('❌ SiteContentLoader: Error initializing', error);
             // Site will still work with static content
+        } finally {
+            this.isInitializing = false;
         }
     },
 
@@ -382,7 +387,7 @@ const SiteContentLoader = {
             const icon = card.querySelector('i');
             const text = card.querySelector('p');
             
-            if (icon?.classList.contains('la-phone-volume') && profile.phone) {
+            if ((icon?.classList.contains('la-phone-volume') || icon?.classList.contains('la-phone')) && profile.phone) {
                 text.textContent = profile.phone;
                 card.href = `tel:${profile.phone.replace(/\s/g, '')}`;
             }
@@ -405,24 +410,38 @@ const SiteContentLoader = {
     setupContactForm() {
         const contactForm = document.getElementById('contactForm') || document.querySelector('.contact-form');
         if (!contactForm) return;
+
+        // Prevent duplicate submit bindings if init() runs more than once.
+        if (contactForm.dataset.syncHandlerBound === 'true') return;
+        contactForm.dataset.syncHandlerBound = 'true';
         
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
-            
-            // Get form data
-            const inputs = contactForm.querySelectorAll('input, textarea');
+
+            // Respect HTML5 required/email validation first.
+            if (!contactForm.checkValidity()) {
+                this.showNotification('Please fill in all required fields', 'error');
+                contactForm.reportValidity();
+                return;
+            }
+
+            // Get form data by explicit field ids (more stable than array indexes).
+            const nameInput = contactForm.querySelector('#contactName');
+            const emailInput = contactForm.querySelector('#contactEmail');
+            const subjectInput = contactForm.querySelector('#contactSubject');
+            const messageInput = contactForm.querySelector('#contactMessage');
             const formData = {
-                from: inputs[0]?.value || 'Anonymous',
-                email: inputs[1]?.value || 'no-email@provided.com',
-                subject: inputs[2]?.value || 'No Subject',
-                message: inputs[3]?.value || ''
+                from: nameInput?.value?.trim() || 'Anonymous',
+                email: emailInput?.value?.trim() || '',
+                subject: subjectInput?.value?.trim() || 'No Subject',
+                message: messageInput?.value?.trim() || ''
             };
             
             // Validate
-            if (!formData.email || !formData.message) {
+            if (!formData.from || !formData.email || !formData.message) {
                 this.showNotification('Please fill in all required fields', 'error');
                 return;
             }

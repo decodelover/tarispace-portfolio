@@ -261,71 +261,95 @@
                 <div class="success-message" id="successMessage"></div>
             </form>
 
-            <div class="divider">Demo Credentials</div>
-
-            <div class="demo-login">
-                <p>📝 Test Credentials (Development Only):</p>
-                <p>Email: <code>admin@example.com</code></p>
-                <p>Password: <code>demo123</code></p>
-                <p style="margin-top: 15px; color: #ef4444; font-weight: 600;">
-                    ⚠️ Change credentials in production!
-                </p>
-            </div>
         </div>
     </div>
 
     <script>
-        // Admin Login Handler
+        window.__API_BASE_URL = ['tarispace.me', 'www.tarispace.me'].includes(window.location.hostname)
+            ? 'https://www.tarispace.me/api'
+            : 'http://127.0.0.1:4000/api';
+    </script>
+    <script src="js/data-sync-service.js"></script>
+    <script>
         const LoginManager = {
-            // Demo credentials (replace with backend authentication)
-            demoCredentials: {
-                email: 'admin@example.com',
-                password: 'demo123'
-            },
+            isSubmitting: false,
 
-            init() {
+            async init() {
                 document.getElementById('loginForm').addEventListener('submit', (e) => {
                     this.handleLogin(e);
                 });
 
-                // Check if already logged in
+                await DataSyncService.init();
                 this.checkAuth();
             },
 
-            handleLogin(e) {
+            clearMessages() {
+                document.getElementById('emailError').style.display = 'none';
+                document.getElementById('passwordError').style.display = 'none';
+                document.getElementById('generalError').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'none';
+            },
+
+            setError(message) {
+                const errorEl = document.getElementById('generalError');
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+            },
+
+            setSuccess(message) {
+                const successEl = document.getElementById('successMessage');
+                successEl.textContent = message;
+                successEl.style.display = 'block';
+            },
+
+            setLoadingState(isLoading) {
+                const button = document.querySelector('.login-btn');
+                if (!button) return;
+
+                button.disabled = isLoading;
+                button.textContent = isLoading ? 'Please wait...' : 'Sign In';
+            },
+
+            async handleLogin(e) {
                 e.preventDefault();
+                if (this.isSubmitting) return;
 
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 const remember = document.getElementById('remember').checked;
 
-                // Clear previous errors
-                document.getElementById('emailError').style.display = 'none';
-                document.getElementById('passwordError').style.display = 'none';
-                document.getElementById('generalError').style.display = 'none';
+                this.clearMessages();
 
-                // Validate input
                 if (!email || !password) {
-                    document.getElementById('generalError').textContent = 'Please fill in all fields';
-                    document.getElementById('generalError').style.display = 'block';
+                    this.setError('Please fill in all fields');
                     return;
                 }
 
-                // Demo validation (replace with API call)
-                if (email === this.demoCredentials.email && 
-                    password === this.demoCredentials.password) {
+                try {
+                    this.isSubmitting = true;
+                    this.setLoadingState(true);
+
+                    const isValid = await DataSyncService.verifyAdminCredentials(email, password);
+
+                    if (!isValid) {
+                        this.setError('Invalid email or password');
+                        return;
+                    }
+
                     this.loginSuccess(email, remember);
-                } else {
-                    document.getElementById('generalError').textContent = 'Invalid email or password';
-                    document.getElementById('generalError').style.display = 'block';
+                } catch (error) {
+                    this.setError(error.message || 'Unable to sign in right now');
+                } finally {
+                    this.isSubmitting = false;
+                    this.setLoadingState(false);
                 }
             },
 
             loginSuccess(email, remember) {
-                // Store authentication info
+                const existingAuth = this.getStoredAuthData();
                 const authData = {
                     email: email,
-                    token: 'demo-token-' + Date.now(),
+                    token: existingAuth?.token || '',
                     loginTime: new Date().toISOString()
                 };
 
@@ -333,16 +357,23 @@
 
                 if (remember) {
                     localStorage.setItem('rememberEmail', email);
+                } else {
+                    localStorage.removeItem('rememberEmail');
                 }
 
-                // Show success message
-                document.getElementById('successMessage').textContent = 'Login successful! Redirecting...';
-                document.getElementById('successMessage').style.display = 'block';
+                this.setSuccess('Login successful! Redirecting...');
 
-                // Redirect to admin dashboard
                 setTimeout(() => {
                     window.location.href = 'admin.html';
                 }, 1500);
+            },
+
+            getStoredAuthData() {
+                try {
+                    return JSON.parse(localStorage.getItem('authData') || '{}');
+                } catch (error) {
+                    return {};
+                }
             },
 
             checkAuth() {
@@ -354,29 +385,69 @@
                     document.getElementById('remember').checked = true;
                 }
 
-                // If already authenticated, redirect
                 if (authData) {
-                    const auth = JSON.parse(authData);
-                    const loginTime = new Date(auth.loginTime).getTime();
-                    const now = Date.now();
-                    const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+                    try {
+                        const auth = JSON.parse(authData);
+                        const loginTime = new Date(auth.loginTime).getTime();
+                        const now = Date.now();
+                        const sessionDuration = 24 * 60 * 60 * 1000;
 
-                    if (now - loginTime < sessionDuration) {
-                        window.location.href = 'admin.html';
-                    } else {
+                        if (now - loginTime < sessionDuration) {
+                            window.location.href = 'admin.html';
+                        } else {
+                            localStorage.removeItem('authData');
+                        }
+                    } catch (error) {
                         localStorage.removeItem('authData');
                     }
+                }
+            },
+
+            async handleForgotPassword(e) {
+                e.preventDefault();
+                this.clearMessages();
+
+                try {
+                    await DataSyncService.init();
+                    const adminAuth = await DataSyncService.getAdminAuth(true);
+                    const email = prompt(`Enter the admin email to reset the password.\n\nCurrent admin email: ${adminAuth.email}`);
+                    if (email === null) return;
+
+                    const recoveryKey = prompt(
+                        'Enter your backend recovery key (ADMIN_RECOVERY_KEY from backend/.env).'
+                    );
+                    if (recoveryKey === null) return;
+
+                    const newPassword = prompt('Enter your new admin password (minimum 6 characters).');
+                    if (newPassword === null) return;
+
+                    const confirmPassword = prompt('Confirm your new admin password.');
+                    if (confirmPassword === null) return;
+
+                    if (newPassword !== confirmPassword) {
+                        this.setError('The new passwords do not match');
+                        return;
+                    }
+
+                    await DataSyncService.resetAdminPassword({
+                        email,
+                        recoveryKey,
+                        newPassword
+                    });
+
+                    document.getElementById('email').value = adminAuth.email;
+                    document.getElementById('password').value = '';
+                    this.setSuccess('Password reset successful. Sign in with your new password.');
+                } catch (error) {
+                    this.setError(error.message || 'Password reset failed');
                 }
             }
         };
 
-        // Forgot password handler
         function handleForgotPassword(e) {
-            e.preventDefault();
-            alert('Password reset feature coming soon!\n\nFor now, use demo credentials:\nEmail: admin@example.com\nPassword: demo123');
+            LoginManager.handleForgotPassword(e);
         }
 
-        // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
             LoginManager.init();
         });

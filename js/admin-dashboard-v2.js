@@ -1,19 +1,24 @@
 /**
- * Admin Dashboard JavaScript - Cloud Synced Version
+ * Admin Dashboard JavaScript - Backend API Version
  * 
- * This version uses DataSyncService for cloud-based data persistence.
+ * This version uses DataSyncService as an adapter to the Node.js API.
  * All changes made here will sync to the main site (index.html) automatically.
  */
 
 const AdminDashboard = {
     data: null,
     isLoading: false,
+    SESSION_DURATION: 24 * 60 * 60 * 1000,
 
     // ========================================================================
     // INITIALIZATION
     // ========================================================================
     
     async init() {
+        if (!this.requireAuth()) {
+            return;
+        }
+
         this.showLoadingOverlay('Initializing Dashboard...');
         
         try {
@@ -86,6 +91,41 @@ const AdminDashboard = {
         this.updateNotificationBadge();
     },
 
+    getStoredAuth() {
+        try {
+            const authData = localStorage.getItem('authData');
+            return authData ? JSON.parse(authData) : null;
+        } catch (error) {
+            localStorage.removeItem('authData');
+            return null;
+        }
+    },
+
+    requireAuth() {
+        const auth = this.getStoredAuth();
+        if (!auth?.loginTime) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+
+        const loginTime = new Date(auth.loginTime).getTime();
+        if (!loginTime || Date.now() - loginTime >= this.SESSION_DURATION) {
+            localStorage.removeItem('authData');
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+
+        return true;
+    },
+
+    refreshSessionTimestamp() {
+        const auth = this.getStoredAuth();
+        if (!auth) return;
+
+        auth.loginTime = new Date().toISOString();
+        localStorage.setItem('authData', JSON.stringify(auth));
+    },
+
     // ========================================================================
     // LOADING OVERLAY
     // ========================================================================
@@ -145,6 +185,7 @@ const AdminDashboard = {
         document.getElementById('logoutBtn')?.addEventListener('click', () => {
             if (confirm('Are you sure you want to logout?')) {
                 this.showToast('Logged out successfully', 'success');
+                localStorage.removeItem('authData');
                 setTimeout(() => {
                     window.location.href = 'admin-login.html';
                 }, 1500);
@@ -274,7 +315,7 @@ const AdminDashboard = {
         });
 
         document.getElementById('changePasswordBtn')?.addEventListener('click', () => {
-            this.showToast('Password change feature coming soon', 'info');
+            this.changePassword();
         });
 
         document.getElementById('backupDataBtn')?.addEventListener('click', () => {
@@ -954,7 +995,7 @@ const AdminDashboard = {
         const btn = document.getElementById('syncCloudBtn');
         if (btn) btn.disabled = true;
 
-        this.showLoadingOverlay('Syncing 6 blogs to JSONbin cloud...');
+        this.showLoadingOverlay('Syncing 6 blogs to PostgreSQL backend...');
 
         try {
             // The 6 blog articles with all metadata
@@ -973,19 +1014,19 @@ const AdminDashboard = {
             this.data.stats.blogs = 6;
             this.data.lastUpdated = new Date().toISOString();
 
-            // Save to cloud using DataSyncService (which handles CORS properly)
+            // Save to backend via DataSyncService API adapter
             await DataSyncService.saveData(this.data);
             
             // Refresh local data
             this.renderBlog();
             this.loadDashboard();
             this.hideLoadingOverlay();
-            this.showToast('✅ Successfully synced 6 blogs to cloud! Live site will update within 30 seconds.', 'success');
+            this.showToast('Successfully synced 6 blogs to backend. Live site will update shortly.', 'success');
             
         } catch (error) {
             console.error('Sync error:', error);
             this.hideLoadingOverlay();
-            this.showToast('❌ Error syncing to cloud: ' + error.message, 'error');
+            this.showToast('Error syncing blogs to backend: ' + error.message, 'error');
         } finally {
             if (btn) btn.disabled = false;
         }
@@ -1216,6 +1257,38 @@ const AdminDashboard = {
         } catch (error) {
             this.hideLoadingOverlay();
             this.showToast('Error saving settings: ' + error.message, 'error');
+        }
+    },
+
+    async changePassword() {
+        const currentPassword = prompt('Enter your current admin password.');
+        if (currentPassword === null) return;
+
+        const newPassword = prompt('Enter your new admin password (minimum 6 characters).');
+        if (newPassword === null) return;
+
+        const confirmPassword = prompt('Confirm your new admin password.');
+        if (confirmPassword === null) return;
+
+        if (newPassword !== confirmPassword) {
+            this.showToast('The new passwords do not match', 'error');
+            return;
+        }
+
+        this.showLoadingOverlay('Updating password...');
+
+        try {
+            await DataSyncService.changeAdminPassword({
+                currentPassword,
+                newPassword
+            });
+
+            this.refreshSessionTimestamp();
+            this.hideLoadingOverlay();
+            this.showToast('Password updated successfully.', 'success');
+        } catch (error) {
+            this.hideLoadingOverlay();
+            this.showToast('Error changing password: ' + error.message, 'error');
         }
     },
 

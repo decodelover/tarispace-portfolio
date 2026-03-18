@@ -14,12 +14,19 @@
 const SiteContentLoader = {
     data: null,
     isLoaded: false,
+    isInitializing: false,
+    _refreshIntervalId: null,
 
     // ========================================================================
     // INITIALIZATION
     // ========================================================================
     
     async init() {
+        if (this.isLoaded || this.isInitializing) {
+            return;
+        }
+
+        this.isInitializing = true;
         console.log('🚀 SiteContentLoader: Initializing...');
         
         try {
@@ -38,6 +45,9 @@ const SiteContentLoader = {
             this.updateBlog();
             this.updateSkills();
             this.updateContact();
+
+            // Ensure portfolio filters work after dynamic content render.
+            this.setupPortfolioFilters();
             
             // Setup form handlers
             this.setupContactForm();
@@ -54,10 +64,16 @@ const SiteContentLoader = {
         } catch (error) {
             console.error('❌ SiteContentLoader: Error initializing', error);
             // Site will still work with static content
+        } finally {
+            this.isInitializing = false;
         }
     },
 
     setupRealtimeUpdates() {
+        if (this._refreshIntervalId) {
+            return;
+        }
+
         // Listen for localStorage changes (from admin in another tab)
         window.addEventListener('storage', (e) => {
             if (e.key === 'portfolioDataUpdate' || e.key === 'portfolioData') {
@@ -66,8 +82,8 @@ const SiteContentLoader = {
             }
         });
 
-        // Refresh content more frequently (every 30 seconds) for faster updates
-        setInterval(() => this.refreshContent(), 30000);
+        // Keep a short polling interval so edits in admin appear quickly on the site.
+        this._refreshIntervalId = setInterval(() => this.refreshContent(), 5000);
         
         // Also listen for custom events from the same tab
         window.addEventListener('portfolioDataUpdated', () => {
@@ -86,6 +102,7 @@ const SiteContentLoader = {
             this.updatePortfolio();
             this.updateBlog();
             this.updateSkills();
+            this.setupPortfolioFilters();
             console.log('✅ Content refreshed successfully');
         } catch (error) {
             console.error('Error refreshing content:', error);
@@ -242,25 +259,35 @@ const SiteContentLoader = {
         
         const servicesContainer = document.querySelector('.services-grid, #section3 .row');
         if (!servicesContainer) return;
-        
-        // Keep a reference to original structure if needed
-        // For now, we'll update existing service cards or create new ones
-        
+
         const services = this.data.services;
-        const existingCards = servicesContainer.querySelectorAll('.service-box, .service-card-item');
-        
+        servicesContainer.innerHTML = '';
+
         services.forEach((service, index) => {
-            if (existingCards[index]) {
-                // Update existing card
-                const card = existingCards[index];
-                const titleEl = card.querySelector('h3, .service-title');
-                const descEl = card.querySelector('p, .service-description');
-                const iconEl = card.querySelector('i');
-                
-                if (titleEl) titleEl.textContent = service.title;
-                if (descEl) descEl.textContent = service.description;
-                if (iconEl) iconEl.className = `las ${service.icon}`;
-            }
+            const features = Array.isArray(service.features)
+                ? service.features.filter(Boolean)
+                : [];
+
+            const featureTags = features
+                .map((feature) => `<span class="feature-tag">${feature}</span>`)
+                .join('');
+
+            const card = document.createElement('div');
+            card.className = `service-card service-card-${index + 1}`;
+            card.innerHTML = `
+                <div class="service-card-inner">
+                    <div class="service-icon-wrapper">
+                        <div class="icon-bg"></div>
+                        <i class="las ${service.icon || 'la-cog'}"></i>
+                    </div>
+                    <h3>${service.title || 'Service'}</h3>
+                    <p>${service.description || ''}</p>
+                    <div class="service-features">${featureTags}</div>
+                    <a href="#page6" class="service-link">Learn More <i class="las la-arrow-right"></i></a>
+                </div>
+            `;
+
+            servicesContainer.appendChild(card);
         });
     },
 
@@ -273,38 +300,94 @@ const SiteContentLoader = {
         
         const portfolioContainer = document.querySelector('.portfolio-grid, .portfolio-items');
         if (!portfolioContainer) return;
-        
+
         const projects = this.data.projects;
-        const existingItems = portfolioContainer.querySelectorAll('.portfolio-item, .portfolio-box');
-        
-        projects.forEach((project, index) => {
-            if (existingItems[index]) {
-                const item = existingItems[index];
-                
-                // Update image
-                const img = item.querySelector('img');
-                if (img && project.image) img.src = project.image;
-                
-                // Update title
-                const title = item.querySelector('h3, .portfolio-title');
-                if (title) title.textContent = project.title;
-                
-                // Update description
-                const desc = item.querySelector('.portfolio-description, p');
-                if (desc) desc.textContent = project.description;
-                
-                // Update link
-                const link = item.querySelector('a[href]');
-                if (link && project.link) link.href = project.link;
-                
-                // Update technologies/tags
-                const tagsContainer = item.querySelector('.portfolio-tags');
-                if (tagsContainer && project.tech) {
-                    // Parse technologies from string (e.g., "React, Node.js, MongoDB")
-                    const techs = project.tech.split(',').map(t => t.trim());
-                    tagsContainer.innerHTML = techs.map(tech => `<span class="tag">${tech}</span>`).join('');
-                }
-            }
+        const activeFilterButton = document.querySelector('.portfolio-filters .filter-btn.active');
+        const activeFilter = activeFilterButton?.getAttribute('data-filter') || 'all';
+        portfolioContainer.innerHTML = '';
+
+        projects.forEach((project) => {
+            const category = this.normalizeProjectCategory(project.category);
+            const techTags = (project.tech || '')
+                .split(',')
+                .map((tag) => tag.trim())
+                .filter(Boolean)
+                .map((tag) => `<span class="tag">${tag}</span>`)
+                .join('');
+
+            const link = this.normalizeProjectLink(project.link);
+            const isExternalLink = /^https?:\/\//i.test(link);
+
+            const item = document.createElement('div');
+            item.className = 'portfolio-item';
+            item.setAttribute('data-filter', category);
+            item.innerHTML = `
+                <div class="portfolio-card">
+                    <div class="portfolio-image">
+                        <img src="${project.image || 'img/portfolio/01.jpg'}" alt="${project.title || 'Project'}">
+                    </div>
+                    <div class="portfolio-meta">
+                        <h4>${project.title || 'Project'}</h4>
+                        <p class="portfolio-category">${category.toUpperCase()} PROJECT</p>
+                        <p class="portfolio-description">${project.description || ''}</p>
+                        <h5 class="portfolio-stack-title">Tech Stack</h5>
+                        <div class="portfolio-tags">${techTags}</div>
+                        <div class="portfolio-actions">
+                            <a href="${link}" class="portfolio-link-btn" ${isExternalLink ? 'target="_blank" rel="noopener noreferrer"' : ''}>View Project <i class="las la-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            portfolioContainer.appendChild(item);
+        });
+
+        this.setActivePortfolioFilter(activeFilter);
+    },
+
+    normalizeProjectCategory(category) {
+        const normalized = String(category || 'web').trim().toLowerCase();
+        if (normalized.includes('block')) return 'blockchain';
+        if (normalized.includes('design')) return 'design';
+        return 'web';
+    },
+
+    normalizeProjectLink(link) {
+        const normalized = String(link || '').trim();
+        return normalized || '#page6';
+    },
+
+    setupPortfolioFilters() {
+        const filterContainer = document.querySelector('.portfolio-filters');
+        if (!filterContainer || filterContainer.dataset.syncBound === 'true') {
+            return;
+        }
+
+        filterContainer.dataset.syncBound = 'true';
+        filterContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('.filter-btn');
+            if (!button) return;
+
+            const filterValue = button.getAttribute('data-filter') || 'all';
+            this.setActivePortfolioFilter(filterValue);
+        });
+    },
+
+    setActivePortfolioFilter(filterValue = 'all') {
+        const buttons = document.querySelectorAll('.portfolio-filters .filter-btn');
+        const items = document.querySelectorAll('.portfolio-grid .portfolio-item');
+
+        buttons.forEach((button) => {
+            button.classList.toggle('active', button.getAttribute('data-filter') === filterValue);
+        });
+
+        items.forEach((item) => {
+            const itemFilter = item.getAttribute('data-filter') || 'web';
+            const visible = filterValue === 'all' || itemFilter === filterValue;
+
+            item.style.display = visible ? 'block' : 'none';
+            item.style.opacity = visible ? '1' : '0';
+            item.style.transform = visible ? 'translateY(0)' : 'translateY(8px)';
         });
     },
 
@@ -317,23 +400,45 @@ const SiteContentLoader = {
         
         const blogContainer = document.querySelector('.blog-grid, .blog-posts');
         if (!blogContainer) return;
-        
+
         const posts = this.data.blog;
-        const existingCards = blogContainer.querySelectorAll('.blog-card, .blog-item, article');
-        
-        posts.slice(0, existingCards.length).forEach((post, index) => {
-            if (existingCards[index]) {
-                const card = existingCards[index];
-                const title = card.querySelector('h3, .blog-title');
-                const excerpt = card.querySelector('.blog-excerpt, p');
-                const category = card.querySelector('.blog-category');
-                const date = card.querySelector('.blog-date, time');
-                
-                if (title) title.textContent = post.title;
-                if (excerpt) excerpt.textContent = post.excerpt || post.content?.substring(0, 150) + '...';
-                if (category) category.textContent = post.category;
-                if (date) date.textContent = post.date;
-            }
+        blogContainer.innerHTML = '';
+
+        posts.forEach((post) => {
+            const tags = (post.tags || [])
+                .map((tag) => `<span class="tag">${tag}</span>`)
+                .join('');
+
+            const article = document.createElement('article');
+            article.className = 'blog-post';
+            article.innerHTML = `
+                <div class="blog-image">
+                    <img src="${post.image || 'img/blog/1.jpg'}" alt="${post.title || 'Blog Post'}">
+                    <div class="blog-category">${post.category || 'Article'}</div>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="author">
+                            <i class="las la-user"></i>
+                            <a href="#">${post.author || 'Admin'}</a>
+                        </span>
+                        <span class="date">
+                            <i class="las la-calendar"></i>
+                            <a href="#">${post.date || ''}</a>
+                        </span>
+                    </div>
+                    <h3 class="blog-title">
+                        <a href="${post.link || '#'}">${post.title || 'Blog Post'}</a>
+                    </h3>
+                    <p class="blog-excerpt">${post.excerpt || post.content?.substring(0, 150) || ''}</p>
+                    <div class="blog-tags">${tags}</div>
+                    <a href="${post.link || '#'}" class="read-more">
+                        Read Article <i class="las la-arrow-right"></i>
+                    </a>
+                </div>
+            `;
+
+            blogContainer.appendChild(article);
         });
     },
 
@@ -405,6 +510,9 @@ const SiteContentLoader = {
     setupContactForm() {
         const contactForm = document.getElementById('contactForm') || document.querySelector('.contact-form');
         if (!contactForm) return;
+        if (contactForm.dataset.syncBound === 'true') return;
+
+        contactForm.dataset.syncBound = 'true';
         
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -459,6 +567,9 @@ const SiteContentLoader = {
     setupNewsletterForm() {
         const newsletterForm = document.querySelector('.newsletter-form');
         if (!newsletterForm) return;
+        if (newsletterForm.dataset.syncBound === 'true') return;
+
+        newsletterForm.dataset.syncBound = 'true';
         
         newsletterForm.addEventListener('submit', async (e) => {
             e.preventDefault();

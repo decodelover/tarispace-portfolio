@@ -832,7 +832,7 @@ const AdminDashboard = {
         const btn = document.getElementById('syncCloudBtn');
         if (btn) btn.disabled = true;
 
-        this.showToast('Syncing 6 blogs to JSONbin cloud...');
+        this.showToast('Syncing 6 blogs to backend...');
 
         // The 6 blog articles with all metadata
         const blogsToSync = [
@@ -851,33 +851,14 @@ const AdminDashboard = {
         this.renderBlog();
         document.getElementById('blogCount').textContent = '6';
 
-        // Sync to JSONbin using data-sync-service
-        fetch('https://api.jsonbin.io/v3/b/6966ca8cae596e708fda73f6/latest', {
-            headers: { 'X-Master-Key': '$2a$10$kF1WW4grArkeQvZEZPwjaOZd7WvGav.EEpEJT8fWwjwWyJOz8Hn9a' }
-        })
-        .then(r => r.json())
-        .then(data => {
-            data.record.blog = blogsToSync;
-            data.record.stats.blogs = 6;
-            data.record.lastUpdated = new Date().toISOString();
-            
-            return fetch('https://api.jsonbin.io/v3/b/6966ca8cae596e708fda73f6', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': '$2a$10$kF1WW4grArkeQvZEZPwjaOZd7WvGav.EEpEJT8fWwjwWyJOz8Hn9a'
-                },
-                body: JSON.stringify(data.record)
-            });
-        })
-        .then(r => r.json())
-        .then(result => {
-            this.showToast('✅ Successfully synced 6 blogs to cloud! Live site will update within 30 seconds.');
+        DataSyncService.saveData(this.data)
+        .then(() => {
+            this.showToast('Successfully synced 6 blogs to backend.');
             if (btn) btn.disabled = false;
         })
         .catch(err => {
             console.error('Sync error:', err);
-            this.showToast('❌ Error syncing to cloud. Check console.');
+            this.showToast('Error syncing to backend. Check console.');
             if (btn) btn.disabled = false;
         });
     },

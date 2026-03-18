@@ -1,0 +1,27 @@
+{
+  "name": "tarispace-backend",
+  "version": "1.0.0",
+  "description": "Node.js + PostgreSQL backend for Tarispace portfolio admin",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "db:init": "node scripts/init-db.js",
+    "sync:prod": "node scripts/sync-from-production.js",
+    "db:seed:full": "node scripts/seed-full-content.js",
+    "verify:e2e": "node scripts/verify-e2e.js",
+    "messages:dedupe": "node scripts/dedupe-messages.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

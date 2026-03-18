@@ -81,6 +81,20 @@ $(document).ready(function(){
 /* Mobile Nav */
 	$('#nav-13').slicknav();
 	$(".slicknav_menu").appendTo(".small-menu");
+
+	// Auto-close mobile menu after selecting a section link.
+	$(document).on('click', '.slicknav_nav a', function() {
+		if (window.innerWidth > 767) {
+			return;
+		}
+
+		var $menuButton = $('.slicknav_btn');
+		var $menuPanel = $('.slicknav_nav');
+
+		if ($menuButton.length && $menuPanel.is(':visible')) {
+			$menuButton.trigger('click');
+		}
+	});
 	
 /* Type Text*/	
     if ($("#typewriting").length) {

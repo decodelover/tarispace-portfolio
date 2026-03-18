@@ -491,9 +491,9 @@
                         <div class="settings-group">
                             <h3>Data Management</h3>
                             <button class="btn btn-danger" id="resetDataBtn" onclick="AdminDashboard.resetData()">Reset All Data to Default</button>
-                            <p style="font-size: 12px; color: #999; margin-top: 10px;">This will clear localStorage and reload all 6 blog articles from the system.</p>
-                            <button class="btn btn-success" id="syncCloudBtn" onclick="AdminDashboard.syncAllBlogsToCloud()" style="background: #28a745; margin-top: 10px;">🔄 Sync All 6 Blogs to Cloud (JSONbin)</button>
-                            <p style="font-size: 12px; color: #999; margin-top: 10px;">Push the 6 blog articles to JSONbin cloud. They will appear on both admin and main site immediately.</p>
+                            <p style="font-size: 12px; color: #999; margin-top: 10px;">This will reset frontend cache and reload content from the Node.js backend.</p>
+                            <button class="btn btn-success" id="syncCloudBtn" onclick="AdminDashboard.syncAllBlogsToCloud()" style="background: #28a745; margin-top: 10px;">Sync Blogs to PostgreSQL</button>
+                            <p style="font-size: 12px; color: #999; margin-top: 10px;">Push the 6 blog articles to your Node.js API so admin and main site stay aligned.</p>
                         </div>
 
                         <div class="settings-actions">
@@ -583,9 +583,14 @@
         }
     </style>
 
-    <!-- Data Sync Service - Must load first -->
+    <!-- Backend Data Service - Must load first -->
+    <script>
+        window.__API_BASE_URL = ['tarispace.me', 'www.tarispace.me'].includes(window.location.hostname)
+            ? 'https://www.tarispace.me/api'
+            : 'http://127.0.0.1:4000/api';
+    </script>
     <script src="js/data-sync-service.js"></script>
-    <!-- Admin Dashboard with cloud sync -->
+    <!-- Admin Dashboard -->
     <script src="js/admin-dashboard-v2.js"></script>
 </body>
 </html>

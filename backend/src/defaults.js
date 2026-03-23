@@ -104,7 +104,7 @@ module.exports = {
         {
             title: 'Soltrace',
             description: 'Live Solana wallet tracker built with React, Vite, Node.js, Express, and Solana Web3. Soltrace lets you paste a public Solana wallet address and fetch its live SOL balance through a simple dashboard.',
-            image: 'img/portfolio/06.jpg',
+            image: 'img/soltrace.png',
             category: 'blockchain',
             tech: 'React, Vite, Node.js, Express, @solana/web3.js, Vercel Functions',
             link: 'https://soltrace-tracker.vercel.app/',

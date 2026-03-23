@@ -102,12 +102,12 @@ module.exports = {
             featured: false
         },
         {
-            title: 'Mobile Application',
-            description: 'A mobile-first progressive web application with offline capabilities. Optimized for touch interactions and seamless cross-device experience.',
+            title: 'Soltrace',
+            description: 'Live Solana wallet tracker built with React, Vite, Node.js, Express, and Solana Web3. Soltrace lets you paste a public Solana wallet address and fetch its live SOL balance through a simple dashboard.',
             image: 'img/portfolio/06.jpg',
-            category: 'design',
-            tech: 'Mobile, PWA, Responsive',
-            link: '#page6',
+            category: 'blockchain',
+            tech: 'React, Vite, Node.js, Express, @solana/web3.js, Vercel Functions',
+            link: 'https://soltrace-tracker.vercel.app/',
             featured: false
         }
     ],
